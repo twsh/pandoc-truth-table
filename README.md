@@ -6,6 +6,8 @@ Usage:
 
 `$ pandoc --filter truth-table.py foo.md`
 
+The filter will convert code blocks with the 'ttable' attribute to truth tables, as long as the contents are understandable by the Python truth table generator module.
+
 
     ```{.ttable}
     P and Q, P
