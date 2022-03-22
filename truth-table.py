@@ -9,7 +9,7 @@ Example input:
 P and Q
 ```
 
-Tested with panflute 1.12.5 and pandoc 2.9.2.1
+Tested with panflute 2.1.0 and pandoc 2.17.1.1
 
 TODO: Find the logical vocabulary, and count everything else as a letter, rather than just taking
 upper case:
@@ -66,7 +66,7 @@ def ttables(elem, doc):
     if isinstance(elem, pf.CodeBlock) and "ttable" in elem.classes:
         # The formulae, as a list
         formulae = elem.text.split(",")
-        # I need to get the letters in the formulaa, for the generator
+        # I need to get the letters in the formulae, for the generator
         # This gets everything upper case, and puts them in order
         letters = sorted(set(re.findall("[A-Z]", elem.text)))
         # make the table with the truth-table-generator library
@@ -80,13 +80,13 @@ def ttables(elem, doc):
             index=False,  # no line numbers
             table_format="simple",  # this is a format that Pandoc can read
         )
-        # Replace '1' and '0' with 'T' and 'F'
+        # Replace '1'/'True' and '0'/'False' with 'T' and 'F'
         markdown_table = re.sub("1|True", "T", markdown_table)
         markdown_table = re.sub("0|False", "F", markdown_table)
         pandoc_table = pf.convert_text(markdown_table)[0]  # convert_text returns a list
-        # The header should contain Math objects
-        pandoc_table.header = pandoc_table.header.walk(mathify)
-        pandoc_table.caption = [pf.Math(latexify(elem.text), format="InlineMath")]
+        # Use the text of the code block as a Caption object
+        # The mathify and latexify functions are no longer needed
+        pandoc_table.caption = pf.Caption(pf.Plain(pf.Str(elem.text)))
         return pandoc_table
     return None
 
